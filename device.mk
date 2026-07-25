@@ -375,7 +375,10 @@ PRODUCT_PACKAGES += \
 $(call soong_config_set, lineage_health, charging_control_charging_path, /sys/class/qcom-battery/input_suspend)
 $(call soong_config_set, lineage_health, charging_control_charging_enabled, 0)
 $(call soong_config_set, lineage_health, charging_control_charging_disabled, 1)
-$(call soong_config_set_bool, lineage_health, charging_control_supports_bypass, false)
+# StatiX's hardware/statix/interfaces/health reads this with string branches
+# ("true"/"false"), not bool ones, so set it as a string -- soong_config_set_bool
+# would declare it bool and fail select() type checking.
+$(call soong_config_set, lineage_health, charging_control_supports_bypass, false)
 
 # Media
 PRODUCT_PACKAGES += \

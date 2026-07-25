@@ -105,6 +105,16 @@ TARGET_KERNEL_SOURCE := $(KERNEL_PATH)/kernel-headers
 TARGET_NO_KERNEL_OVERRIDE := true
 TARGET_PREBUILT_KERNEL := $(KERNEL_PATH)/kernel
 
+# Feed the prebuilt uapi headers to AOSP's "device_kernel_headers" module
+# (build/soong/Android.bp), which exports TARGET_{DEVICE,BOARD,PRODUCT}_KERNEL_HEADERS.
+# Consumers such as librmnetctl and the qcom bootctrl/thermal HALs pull the
+# qcom-specific headers (linux/rmnet_data.h, ...) in through it.  There is no
+# device/xiaomi/sapphire/kernel-headers, so TARGET_DEVICE_KERNEL_HEADERS is
+# empty and the board variable is what makes them visible.  The directory name
+# has to end in "kernel-headers" (validate-kernel-headers) and its contents
+# must be clean_header.py-processed -- see the note in sapphire-kernel/Android.bp.
+TARGET_BOARD_KERNEL_HEADERS := $(KERNEL_PATH)/kernel-headers
+
 PRODUCT_COPY_FILES += $(TARGET_PREBUILT_KERNEL):kernel
 
 BOARD_SYSTEM_KERNEL_MODULES_LOAD := $(strip $(shell cat $(KERNEL_PATH)/system_dlkm/modules.load))
@@ -187,12 +197,40 @@ TARGET_COPY_OUT_SYSTEM_EXT := system_ext
 TARGET_COPY_OUT_VENDOR := vendor
 TARGET_COPY_OUT_VENDOR_DLKM := vendor_dlkm
 
--include vendor/lineage/config/BoardConfigReservedSize.mk
-
 # Platform
 BOARD_USES_QCOM_HARDWARE := true
 TARGET_BOARD_PLATFORM := bengal
 TARGET_BOARD_SUFFIX := _515
+
+# vendor/statix/build/core/utils.mk defines the qcom board-platform macros in
+# terms of PRODUCT_USES_<vendor>_HARDWARE and PRODUCT_BOARD_PLATFORM, whereas
+# LineageOS (and every qcom Android.mk written against it) uses
+# BOARD_USES_<vendor>_HARDWARE and TARGET_BOARD_PLATFORM.  Nothing in the StatiX
+# tree ever assigns the PRODUCT_ spellings, so
+#   $(call is-vendor-board-platform,QCOM)
+# always evaluates empty and every Android.mk behind that guard is skipped --
+# silently, because PRODUCT_ENFORCE_PACKAGES_EXIST is off.  That is what dropped
+# android.hardware.power-service-qti (system_server then NPEs in
+# HintManagerService because IPower is undeclared), the sm6225 audio HAL and the
+# media codecs from the image.
+#
+# Mirror the two variables here so the macros resolve.  This must not be done
+# from a product makefile: vendor/statix/config/common.mk keys an include of
+# hardware/qcom-caf/common/build/core/ProductConfigQcom.mk off
+# PRODUCT_USES_QCOM_HARDWARE, and that file does not exist in this qcom-caf
+# fork.  Board config is evaluated after product config, so setting it here
+# reaches Android.mk parsing without tripping that include.
+PRODUCT_USES_QCOM_HARDWARE := true
+PRODUCT_BOARD_PLATFORM := $(TARGET_BOARD_PLATFORM)
+
+# LineageOS pulls this in from vendor/lineage/config/BoardConfigLineage.mk;
+# StatiX's BoardConfigStatix.mk does not, so include it here.  It maps
+# bengal + _515 -> QCOM_HARDWARE_VARIANT sm6225 and sets up the qcom-caf
+# soong namespaces (hardware/qcom-caf/sm6225, bootctrl, wlan, thermal) plus
+# the qtiaudio/qtidisplay soong config vars that the HALs build against.
+# Must stay ahead of vendor/statix/config/BoardConfigSoong.mk, which reads
+# UM_PLATFORMS/QSSI_SUPPORTED_PLATFORMS/QCOM_SOONG_NAMESPACE from it.
+include hardware/qcom-caf/common/BoardConfigQcom.mk
 
 # Properties
 TARGET_ODM_PROP += $(DEVICE_PATH)/configs/properties/odm.prop
@@ -216,7 +254,8 @@ BOOT_SECURITY_PATCH := 2026-03-01
 VENDOR_SECURITY_PATCH := $(BOOT_SECURITY_PATCH)
 
 # Sepolicy
-include device/qcom/sepolicy_vndr/SEPolicy.mk
+include device/qcom/sepolicy_vndr/sm6225/SEPolicy.mk
+include device/statix/sepolicy/qcom/sepolicy.mk
 include device/xiaomi/sepolicy/SEPolicy.mk
 SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/public
 SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/private
