@@ -546,7 +546,9 @@ PRODUCT_SHIPPING_API_LEVEL := $(BOARD_SHIPPING_API_LEVEL)
 # Soong namespaces
 PRODUCT_SOONG_NAMESPACES += \
     $(LOCAL_PATH) \
-    hardware/xiaomi
+    hardware/xiaomi \
+    hardware/qcom/wlan/qcwcn \
+    device/qcom/common/vendor/telephony
 
 # Telephony
 PRODUCT_PACKAGES += \
@@ -568,8 +570,9 @@ PRODUCT_PACKAGES += \
     telephony-ext \
     xiaomi-telephony-stub
 
+# telephony-ext already comes from vendor/aospa/target/product/aospa-target.mk;
+# listing it twice puts a duplicate entry on the bootclasspath and breaks dex2oat.
 PRODUCT_BOOT_JARS += \
-    telephony-ext \
     xiaomi-telephony-stub
 
 PRODUCT_COPY_FILES += \
@@ -663,3 +666,14 @@ PRODUCT_PACKAGES += \
     firmware_WCNSS_qcom_cfg.ini_symlink \
     firmware_wlanmdsp.mbn_symlink
     
+
+# The QTI perf HIDL interface libs ship only under /system_ext/lib*, but the perf
+# and iop HAL services (and libqti-perfd-client, pulled in by qsap_qapeservice)
+# are vendor binaries, and the vendor linker namespace only searches /vendor/lib*.
+# Without a vendor-side copy they fail to link and exit(1) in a loop, which makes
+# init set sys.init.updatable_crashing and drives RescueParty into rebooting.
+PRODUCT_COPY_FILES += \
+    vendor/xiaomi/sapphire/proprietary/system_ext/lib64/vendor.qti.hardware.perf@2.0.so:$(TARGET_COPY_OUT_VENDOR)/lib64/vendor.qti.hardware.perf@2.0.so \
+    vendor/xiaomi/sapphire/proprietary/system_ext/lib64/vendor.qti.hardware.perf@2.1.so:$(TARGET_COPY_OUT_VENDOR)/lib64/vendor.qti.hardware.perf@2.1.so \
+    vendor/xiaomi/sapphire/proprietary/system_ext/lib64/vendor.qti.hardware.perf@2.2.so:$(TARGET_COPY_OUT_VENDOR)/lib64/vendor.qti.hardware.perf@2.2.so \
+    vendor/xiaomi/sapphire/proprietary/system_ext/lib64/vendor.qti.hardware.perf@2.3.so:$(TARGET_COPY_OUT_VENDOR)/lib64/vendor.qti.hardware.perf@2.3.so

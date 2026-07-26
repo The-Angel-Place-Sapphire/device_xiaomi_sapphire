@@ -264,7 +264,10 @@ DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE += \
     $(DEVICE_PATH)/configs/vintf/framework_compatibility_matrix.xml \
     hardware/qcom-caf/common/vendor_framework_compatibility_matrix.xml \
     hardware/xiaomi/vintf/xiaomi_framework_compatibility_matrix.xml
-DEVICE_FRAMEWORK_MANIFEST_FILE += $(DEVICE_PATH)/configs/vintf/framework_manifest.xml
+# Dropped: its only entry (vendor.qti.hardware.qccsyshal) is already declared by
+# device/qcom/qssi_64/framework_manifest.xml, which AOSPA adds in
+# device/qcom/common/common.mk, and the duplicate makes the merged
+# /system/etc/vintf/manifest.xml unparseable.
 DEVICE_MANIFEST_FILE += \
     $(DEVICE_PATH)/configs/vintf/manifest.xml \
     $(DEVICE_PATH)/configs/vintf/network_manifest.xml
@@ -277,7 +280,7 @@ DEVICE_MATRIX_FILE += hardware/qcom-caf/common/compatibility_matrix.xml
 # WiFi
 BOARD_WLAN_DEVICE := qcwcn
 BOARD_HOSTAPD_DRIVER := NL80211
-BOARD_HOSTAPD_PRIVATE_LIB := lib_driver_cmd_$(BOARD_WLAN_DEVICE)
+BOARD_HOSTAPD_PRIVATE_LIB := //hardware/qcom/wlan/qcwcn/wpa_supplicant_8_lib:lib_driver_cmd_$(BOARD_WLAN_DEVICE)
 BOARD_WPA_SUPPLICANT_DRIVER := $(BOARD_HOSTAPD_DRIVER)
 BOARD_WPA_SUPPLICANT_PRIVATE_LIB := $(BOARD_HOSTAPD_PRIVATE_LIB)
 BOARD_WPA_SUPPLICANT_PRIVATE_LIB_EVENT := "ON"
@@ -290,3 +293,12 @@ WIFI_HIDL_FEATURE_AWARE := true
 WIFI_HIDL_FEATURE_DUAL_INTERFACE := true
 WIFI_HIDL_UNIFIED_SUPPLICANT_SERVICE_RC_ENTRY := true
 WPA_SUPPLICANT_VERSION := VER_0_8_X
+
+# LineageOS build macro that the CAF HALs rely on; AOSPA has no equivalent, so
+# map the few keys they use onto this device's HAL paths.
+define project-path-for
+$(strip \
+  $(if $(filter qcom-audio,$(1)),hardware/qcom-caf/sm6225/audio, \
+  $(if $(filter qcom-display,$(1)),hardware/qcom-caf/sm6225/display, \
+  $(if $(filter qcom-media,$(1)),hardware/qcom-caf/sm6225/media))))
+endef
