@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2026 The LineageOS Project
+
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+    <string name="charge_control_title">Modo de carregamento</string>
+    <string name="charge_control_summary">Escolha a velocidade de carregamento da bateria</string>
+    <string name="charge_mode_title">Velocidade de carregamento</string>
+
+    <string name="charge_mode_slow">Lento (cerca de 7 W)</string>
+    <string name="charge_mode_fast">Rápido (cerca de 15 W)</string>
+    <string name="charge_mode_super">Super rápido (33 W)</string>
+
+    <string name="charge_mode_footer">Um carregamento mais lento aquece menos o celular e é mais suave para a bateria. O super rápido precisa do carregador original de 33 W.</string>
+</resources>
