@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2026 The LineageOS Project
+
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+    <string name="charge_control_title">Charging mode</string>
+    <string name="charge_control_summary">Choose how fast the battery charges</string>
+    <string name="charge_mode_title">Charging speed</string>
+
+    <string name="charge_mode_slow">Slow (about 7 W)</string>
+    <string name="charge_mode_fast">Fast (about 15 W)</string>
+    <string name="charge_mode_super">Super fast (33 W)</string>
+
+    <string name="charge_mode_footer">Slower charging keeps the phone cooler and is gentler on the battery. Super fast needs the original 33 W charger.</string>
+</resources>

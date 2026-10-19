@@ -1,0 +1,27 @@
+//
+// Copyright (C) 2026 The LineageOS Project
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+android_app {
+    name: "ChargeControl",
+    defaults: [
+        "SettingsLibDefaults",
+    ],
+
+    srcs: [
+        "src/**/*.java"
+    ],
+
+    certificate: "platform",
+    resource_dirs: ["res"],
+    platform_apis: true,
+    system_ext_specific: true,
+    privileged: true,
+
+    static_libs: [
+        "androidx.core_core",
+        "androidx.preference_preference",
+    ],
+}

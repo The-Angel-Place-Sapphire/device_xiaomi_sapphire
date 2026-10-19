@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2026 The LineageOS Project
+
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+    <string-array name="charge_mode_entries">
+        <item>@string/charge_mode_slow</item>
+        <item>@string/charge_mode_fast</item>
+        <item>@string/charge_mode_super</item>
+    </string-array>
+
+    <string-array name="charge_mode_values" translatable="false">
+        <item>slow</item>
+        <item>fast</item>
+        <item>super</item>
+    </string-array>
+</resources>

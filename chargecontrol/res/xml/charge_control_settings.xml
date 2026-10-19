@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2026 The LineageOS Project
+
+     SPDX-License-Identifier: Apache-2.0
+-->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ListPreference
+        android:key="charge_mode"
+        android:defaultValue="super"
+        android:icon="@drawable/ic_charge_control"
+        android:title="@string/charge_mode_title"
+        android:entries="@array/charge_mode_entries"
+        android:entryValues="@array/charge_mode_values"
+        app:useSimpleSummaryProvider="true" />
+
+    <com.android.settingslib.widget.FooterPreference
+        android:key="charge_mode_footer"
+        android:title="@string/charge_mode_footer"
+        android:selectable="false" />
+
+</PreferenceScreen>

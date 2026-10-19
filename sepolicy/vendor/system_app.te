@@ -22,3 +22,8 @@ binder_call(system_app, hal_health_default)
 binder_call(system_app, hal_ir_default)
 binder_call(system_app, hal_memtrack_default)
 binder_call(system_app, vendor_hal_gnss_qti)
+
+# ChargeControl: charge modes and Type-C reset through the smb5 IIO device
+allow system_app vendor_sysfs_iio:dir r_dir_perms;
+allow system_app sysfs:lnk_file { getattr read };
+allow system_app vendor_sysfs_battery_supply:file w_file_perms;
