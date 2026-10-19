@@ -1,0 +1,4 @@
+# XiaomiParts relabels thermal_message/sconfig away from sysfs_thermal
+allow mi_thermald sysfs_thermal_sconfig:file rw_file_perms;
+allow vendor_hal_perf_default sysfs_thermal_sconfig:file rw_file_perms;
+allow thermal_service sysfs_thermal_sconfig:file { getattr open read };

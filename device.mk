@@ -448,6 +448,15 @@ DEVICE_PACKAGE_OVERLAYS += \
  PRODUCT_PACKAGES += \
     XiaomiVoIPFix
 
+# XiaomiParts
+PRODUCT_SOONG_NAMESPACES += \
+    packages/apps/XiaomiParts
+
+PRODUCT_PACKAGES += \
+    ClearSpeaker \
+    Saturation \
+    ThermalProfiles
+
 # Partitions
 PRODUCT_USE_DYNAMIC_PARTITIONS := true
 
