@@ -26,7 +26,7 @@ LUNARIS_BUILD_TYPE := OFFICIAL
 # Device configs
 TARGET_BOOT_ANIMATION_RES = 1080
 TARGET_HAS_UDFPS := true
-WITH_GMS := true
+WITH_GMS ?= true
 
 PRODUCT_NAME := lineage_sapphire
 PRODUCT_DEVICE := sapphire
